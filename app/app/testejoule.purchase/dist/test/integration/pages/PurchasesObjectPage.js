@@ -1,0 +1,2 @@
+sap.ui.define(["sap/fe/test/ObjectPage"],function(e){"use strict";var t={actions:{},assertions:{}};return new e({appId:"testejoule.purchase",componentId:"PurchasesObjectPage",contextPath:"/Purchases"},t)});
+//# sourceMappingURL=PurchasesObjectPage.js.map

@@ -1,0 +1,2 @@
+sap.ui.require(["sap/fe/test/JourneyRunner","testejoule/products/test/integration/FirstJourney","testejoule/products/test/integration/pages/ProductsList","testejoule/products/test/integration/pages/ProductsObjectPage"],function(t,e,s,r){"use strict";var t=new t({launchUrl:sap.ui.require.toUrl("testejoule/products")+"/index.html"});t.run({pages:{onTheProductsList:s,onTheProductsObjectPage:r}},e.run)});
+//# sourceMappingURL=opaTests.qunit.js.map

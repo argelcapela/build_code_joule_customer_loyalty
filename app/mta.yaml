@@ -1,0 +1,278 @@
+_schema-version: '3.1'
+ID: testejoule
+version: 1.0.0
+description: A simple CAP project.
+parameters:
+  deploy_mode: html5-repo
+  enable-parallel-deployments: true
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - rm -rf build/dist
+        - mkdir -p build/dist
+        - rm -rf build/ui-deployer
+        - mkdir -p build/ui-deployer
+    - builder: custom
+      commands:
+        - npm install --production
+        - >-
+          bash -c "cds -v | grep 'cds-dk' || npm i --production --no-save
+          @sap/cds-dk @sap/mdk-tools"
+        - bash -c "export PATH=$PATH:$(pwd)/node_modules/.bin"
+        - cds build --production
+  after-all:
+    - builder: custom
+      commands:
+        - npm install
+modules:
+  - name: testejoule-testejoule.customers
+    type: html5
+    path: app/testejoule.customers
+    build-parameters:
+      builder: custom
+      commands:
+        - rm -rf dist-zip dist
+        - npm install
+        - >-
+          npx -p @ui5/cli@^3.0.0 ui5 build --dest dist
+          --include-task=generateCachebusterInfo
+        - mkdir dist-zip
+        - bash -c "cd dist && npx bestzip ../dist-zip/testejoulecustomers.zip *"
+      _artifactName: testejoulecustomers.zip
+      supported-platforms: []
+      build-result: dist-zip
+  - name: testejoule-testejoule.products
+    type: html5
+    path: app/testejoule.products
+    build-parameters:
+      builder: custom
+      commands:
+        - rm -rf dist-zip dist
+        - npm install
+        - >-
+          npx -p @ui5/cli@^3.0.0 ui5 build --dest dist
+          --include-task=generateCachebusterInfo
+        - mkdir dist-zip
+        - bash -c "cd dist && npx bestzip ../dist-zip/testejouleproducts.zip *"
+      _artifactName: testejouleproducts.zip
+      supported-platforms: []
+      build-result: dist-zip
+  - name: testejoule-testejoule.purchase
+    type: html5
+    path: app/testejoule.purchase
+    build-parameters:
+      builder: custom
+      commands:
+        - rm -rf dist-zip dist
+        - npm install
+        - >-
+          npx -p @ui5/cli@^3.0.0 ui5 build --dest dist
+          --include-task=generateCachebusterInfo
+        - mkdir dist-zip
+        - bash -c "cd dist && npx bestzip ../dist-zip/testejoulepurchase.zip *"
+      _artifactName: testejoulepurchase.zip
+      supported-platforms: []
+      build-result: dist-zip
+  - name: testejoule-testejoule.redemption
+    type: html5
+    path: app/testejoule.redemption
+    build-parameters:
+      builder: custom
+      commands:
+        - rm -rf dist-zip dist
+        - npm install
+        - >-
+          npx -p @ui5/cli@^3.0.0 ui5 build --dest dist
+          --include-task=generateCachebusterInfo
+        - mkdir dist-zip
+        - >-
+          bash -c "cd dist && npx bestzip ../dist-zip/testejouleredemption.zip
+          *"
+      _artifactName: testejouleredemption.zip
+      supported-platforms: []
+      build-result: dist-zip
+  - name: testejoule-db-deployer
+    type: hdb
+    path: gen/db
+    parameters:
+      buildpack: nodejs_buildpack
+    build-parameters:
+      builder: npm
+      ignore:
+        - node_modules
+        - package-lock.json
+    requires:
+      - name: testejoule-service-uaa
+      - name: testejoule-service-db
+  - name: testejoule-srv
+    type: nodejs
+    path: gen/srv
+    parameters:
+      memory: 256MB
+    provides:
+      - name: srv-api
+        properties:
+          srv-url: ${default-url}
+    build-parameters:
+      builder: npm
+      ignore:
+        - node_modules
+        - package-lock.json
+    requires:
+      - name: testejoule-service-uaa
+      - name: testejoule-service-db
+      - name: testejoule-service-destination
+      - name: testejoule-service-metadata
+      - name: testejoule-service-connectivity
+      - name: testejoule-service-logs
+  - name: testejoule-aux-destinations
+    type: com.sap.application.content
+    parameters:
+      content:
+        subaccount:
+          existing_destinations_policy: update
+          destinations:
+            - Authentication: OAuth2UserTokenExchange
+              Name: testejoule-service-uaa
+              ServiceInstanceName: testejoule-uaa
+              ServiceKeyName: testejoule-uaa-key
+              sap.cloud.service: lcap.testejoule
+            - Authentication: OAuth2UserTokenExchange
+              Name: testejoule-app-srv
+              TokenServiceInstanceName: testejoule-uaa
+              TokenServiceKeyName: testejoule-uaa-key
+              URL: ~{srv-api/srv-url}
+              sap.cloud.service: lcap.testejoule
+            - Name: testejoule-service-html5-apps-repo-host
+              ServiceInstanceName: testejoule-html5-apps-repo-host
+              ServiceKeyName: testejoule-html5-apps-repo-host-key
+              sap.cloud.service: lcap.testejoule
+            - Authentication: OAuth2UserTokenExchange
+              Name: testejoule-testejouleSrv
+              TokenServiceInstanceName: testejoule-uaa
+              TokenServiceKeyName: testejoule-uaa-key
+              URL: ~{srv-api/srv-url}/service/testejoule
+              sap.cloud.service: lcap.testejoule
+              sap.applicationdevelopment.actions.enabled: false
+              sap.build.usage: CAP
+              sap.processautomation.enabled: false
+              HTML5.DynamicDestination: false
+              WebIDEEnabled: false
+              MobileEnabled: false
+              AppgyverEnabled: false
+    build-parameters:
+      no-source: true
+    requires:
+      - name: testejoule-service-uaa
+        parameters:
+          service-key:
+            name: testejoule-uaa-key
+      - name: srv-api
+      - name: testejoule-service-html5-apps-repo-host
+        parameters:
+          service-key:
+            name: testejoule-html5-apps-repo-host-key
+      - name: testejoule-service-destination
+        parameters:
+          content-target: true
+  - name: testejoule-launchpad
+    type: html5
+    path: build/launchpad
+    build-parameters:
+      builder: custom
+      commands:
+        - npm install
+        - >-
+          npx -p @ui5/cli@^3.0.0 ui5 build --dest dist
+          --include-task=generateCachebusterInfo
+        - bash -c "cd dist && npx bestzip ../../../build/dist/launchpad.zip *"
+        - rm -rf dist
+      _artifactName: launchpad.zip
+      supported-platforms: []
+      build-result: ../../build/dist
+  - name: testejoule-aux-ui-deployer
+    type: com.sap.application.content
+    path: build/ui-deployer
+    build-parameters:
+      build-result: resources
+      requires:
+        - name: testejoule-testejoule.customers
+          artifacts:
+            - testejoulecustomers.zip
+          target-path: resources
+        - name: testejoule-testejoule.products
+          artifacts:
+            - testejouleproducts.zip
+          target-path: resources
+        - name: testejoule-testejoule.purchase
+          artifacts:
+            - testejoulepurchase.zip
+          target-path: resources
+        - name: testejoule-testejoule.redemption
+          artifacts:
+            - testejouleredemption.zip
+          target-path: resources
+        - name: testejoule-launchpad
+          artifacts:
+            - launchpad.zip
+          target-path: resources
+    requires:
+      - name: testejoule-service-html5-apps-repo-host
+        parameters:
+          content-target: true
+resources:
+  - type: org.cloudfoundry.managed-service
+    name: testejoule-service-uaa
+    parameters:
+      service: xsuaa
+      service-plan: application
+      service-name: testejoule-uaa
+      path: xs-security.json
+      config:
+        oauth2-configuration:
+          redirect-uris:
+            - https://*.${default-domain}/login/*
+        xsappname: testejoule-${space}
+        role-collections: []
+  - type: org.cloudfoundry.managed-service
+    name: testejoule-service-db
+    parameters:
+      service: hana
+      service-plan: hdi-shared
+      service-name: testejoule-db
+  - type: org.cloudfoundry.managed-service
+    name: testejoule-service-destination
+    parameters:
+      service: destination
+      service-plan: lite
+      service-name: testejoule-destination
+      config:
+        HTML5Runtime_enabled: true
+        version: 1.0.0
+  - type: org.cloudfoundry.user-provided-service
+    name: testejoule-service-metadata
+    parameters:
+      service: metadata
+      service-plan: standard
+      service-name: testejoule-metadata
+      config:
+        default-domain: ${default-domain}
+  - type: org.cloudfoundry.managed-service
+    name: testejoule-service-connectivity
+    parameters:
+      service: connectivity
+      service-plan: lite
+      service-name: testejoule-connectivity
+  - type: org.cloudfoundry.managed-service
+    name: testejoule-service-logs
+    parameters:
+      service: application-logs
+      service-plan: lite
+      service-name: testejoule-logs
+  - type: org.cloudfoundry.managed-service
+    name: testejoule-service-html5-apps-repo-host
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-host
+      service-name: testejoule-html5-apps-repo-host

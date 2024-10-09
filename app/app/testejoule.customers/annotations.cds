@@ -1,0 +1,1 @@
+using testejouleSrv as service from '../../srv/service';
