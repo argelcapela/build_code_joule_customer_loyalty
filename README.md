@@ -17,7 +17,7 @@ Um sistema de fidelidade simples, gerado pela IA Joule, onde os clientes acumula
 <center>
     <img src=".readme/build_code_joule_customer_loyalty.gif" width="800px" >
 </center>
-<a href="#">Vídeo de Demonstração do build_code_joule_customer_loyalty</a>
+<a href="https://www.youtube.com/watch?v=4X_lEAa6iWc">Vídeo de Demonstração do build_code_joule_customer_loyalty</a>
 
 <br>
 <br>
@@ -72,5 +72,8 @@ Antes de iniciar a aplicação pela primeira vez, execute o seguinte comando den
 ## 🦟 Erros/Feedback
 Identificou algum erro ou tem alguma sugestão? Por favor me informe, fico feliz em seguir aprendendo mais e melhorando.
 
+<br>
+<br>
+
 ## 🔐 Licença
-...
+<a href="LICENSE">MIT License, Copyright (c) 2024 Argel Capela</a>
