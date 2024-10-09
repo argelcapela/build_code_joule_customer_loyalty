@@ -71,3 +71,6 @@ Antes de iniciar a aplicação pela primeira vez, execute o seguinte comando den
 
 ## 🦟 Erros/Feedback
 Identificou algum erro ou tem alguma sugestão? Por favor me informe, fico feliz em seguir aprendendo mais e melhorando.
+
+## 🔐 Licença
+...
