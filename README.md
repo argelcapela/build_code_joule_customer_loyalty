@@ -23,8 +23,9 @@ Um sistema de fidelidade simples, gerado pela IA Joule, onde os clientes acumula
 <br>
 
 ## 🧑‍🏫 Materiais de Estudo
+* <a href="https://learning.sap.com/learning-journeys/exploring-the-sap-business-ai-portfolio-1/getting-to-know-joule-sap-s-next-gen-ai-copilot_c2663bfb-e217-49cb-8020-79025b1462a3">Getting to Know Joule, SAP's Next-Generation AI Copilot</a><bt>
+* <a href="https://discovery-center.cloud.sap/protected/index.html#/mymissiondetail/122976/card/11203624/?tab=projectboard">Get Started with SAP Build Code and Joule using Generative AI </a><bt>
 * <a href="https://developers.sap.com/tutorials/hcp-create-trial-account..html">Get an Account on SAP BTP Trial</a> <br>
-* <a href="https://discovery-center.cloud.sap/protected/index.html#/mymissiondetail/122976/card/11203624/?tab=projectboard">Get Started with SAP Build Code and Joule using Generative AI (Trial and Enterprise Account)</a><bt>
 * <a href="https://developers.sap.com/group.deploy-full-stack-cap-application.html">Deploy a Full-Stack CAP Application in SAP BTP, Cloud Foundry Runtime Following SAP BTP Developer’s Guide</a> <br>
 * <a href="https://developers.sap.com/tutorials/cap-service-deploy.html">Deploy a CAP Business Service to SAP Business Technology Platform</a>
 
